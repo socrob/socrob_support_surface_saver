@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <arg name="camera_info_topic"   default="/head_camera/rgb/camera_info" />
+    <arg name="node_name"           default="support_surface_publisher" />
+    <arg name="output"              default="screen" />
+    <arg name="robot_env"           default="$(optenv ROBOT_ENV !!NO_ROBOT_ENV_SET!!)" />
+
+    <arg name="set_use_sim_time"    default="false" />
+    <arg name="publish_polygons"    default="true" />
+
+    <!-- The images are saved once every this number -->
+    <arg name="max_rate"            default="5.0" />
+
+    <param if="$(arg set_use_sim_time)" name="use_sim_time" value="true" type="bool" />
+
+    <node pkg="support_surface_saver" type="support_surface_publisher_node" name="$(arg node_name)"
+          output="$(arg output)"          respawn="true" >
+
+        <remap from="~camera_info_in"       to="$(arg camera_info_topic)" />
+        <rosparam command="load"            file="$(find mbot_world_model)/maps/$(arg robot_env)/support_surface_polygons.yaml" />
+        <param name="max_rate"          value="$(arg max_rate)"         type="double" />
+        <param name="publish_polygons"  value="$(arg publish_polygons)" type="bool" />
+
+    </node>
+
+</launch> 

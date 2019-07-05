@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+import support_surface_saver_ros.support_surface_saver
+import rospy
+
+if __name__ == '__main__':
+
+    # Initiating ros node
+    rospy.init_node('support_surface_saver', anonymous=False)
+
+    saver = support_surface_saver_ros.support_surface_saver.SupportSurfaceSaver()
+    try:
+        saver.loop()
+    except rospy.exceptions.ROSInterruptException:
+        pass

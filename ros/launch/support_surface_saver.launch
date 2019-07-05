@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <arg name="camera_info_topic"   default="/head_camera/rgb/camera_info" />
+    <arg name="images_topic"        default="/head_camera/rgb/image_rect_color" />
+    <arg name="node_name"           default="support_surface_saver" />
+    <arg name="output"              default="screen" />
+    <arg name="robot_env"           default="$(optenv ROBOT_ENV !!NO_ROBOT_ENV_SET!!)" />
+
+    <arg name="set_use_sim_time"    default="true" />
+    <arg name="save_images"         default="true" />
+    <arg name="publish_images"      default="true" />
+    <arg name="publish_depth"       default="true" />
+    <arg name="publish_polygons"    default="true" />
+    <!-- The images, depth and pickled support_surface_objects are saved in this folder,
+    the folder is made if it does not exists yet -->
+    <arg name="output_folder"       default="~/support_surface_test" />
+    <!-- The images are saved once every this number -->
+    <arg name="save_images_every"   default="30" />
+
+    <param if="$(arg set_use_sim_time)" name="use_sim_time" value="true" type="bool" />
+
+    <node pkg="support_surface_saver"   type="support_surface_saver_node"       name="$(arg node_name)"
+          output="$(arg output)"        respawn="true" >
+        <remap from="~camera_info_in"       to="$(arg camera_info_topic)" />
+        <remap from="~images_in"            to="$(arg images_topic)" />
+        <param name="output_folder"         value="$(arg output_folder)"        type="string" />
+        <param name="save_images_every"     value="$(arg save_images_every)"    type="int" />
+        <param name="save_images"           value="$(arg save_images)"          type="bool" />
+        <param name="publish_images"        value="$(arg publish_images)"       type="bool" />
+        <param name="publish_depth"         value="$(arg publish_depth)"        type="bool" />
+        <param name="publish_polygons"      value="$(arg publish_polygons)"     type="bool" />
+        <rosparam command="load"            file="$(find mbot_world_model)/maps/$(arg robot_env)/support_surface_polygons.yaml" />
+    </node>
+
+</launch> 
